@@ -29,5 +29,12 @@ class AppController extends Controller
         return new Response($response, 200);
     }
 
+    public function purchase(Request $request)
+    {
+        $response = $this->appServices->purchase($request);
+
+        return new Response($response, 200);
+    }
+
 
 }

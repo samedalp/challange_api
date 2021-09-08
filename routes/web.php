@@ -14,3 +14,4 @@
 */
 
 $router->post('/register', 'AppController@registerApp');
+$router->post('/purchase', 'AppController@purchase');

@@ -9,20 +9,18 @@ use App\Http\Validations\ValidationInterface;
 use Illuminate\Support\Facades\Validator;
 
 
-class DeviceRegisterValidation extends Validation implements ValidationInterface
+class PurchaseValidation extends Validation implements ValidationInterface
 {
 
     /**
      * @param array $requestData
-     * @return DeviceRegisterValidation
+     * @return PurchaseValidation
      */
-    public function makeValidate(array $requestData): DeviceRegisterValidation
+    public function makeValidate(array $requestData): PurchaseValidation
     {
         $validator = Validator::make($requestData, [
-            'uid' => 'string|required',
-            'app_id' => 'string|required',
-            'language' => 'string|required',
-            'device_system' => 'string|required',
+            'receipt' => 'string|required',
+            'client_token' => 'string|required'
         ]);
 
         if ($validator->fails()) {

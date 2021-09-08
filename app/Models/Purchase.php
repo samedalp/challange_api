@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Lumen\Auth\Authorizable;
 
-class Device extends Model implements AuthenticatableContract, AuthorizableContract
+class Purchase extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable, HasFactory;
 
-    protected $table = 'devices';
+    protected $table = 'purchases';
 
     /**
      * The attributes that are mass assignable.
@@ -21,7 +21,7 @@ class Device extends Model implements AuthenticatableContract, AuthorizableContr
      * @var array
      */
     protected $fillable = [
-        'uid', 'app_id', 'language', 'device_system','client_token'
+        'client_token', 'receipt', 'payment_status'
     ];
 
     protected  $timestamp = false;

@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Http\Validations\Validation\DeviceRegisterValidation;
+use App\Http\Validations\Validation\PurchaseValidation;
 use App\Repository\Repositories\DeviceRepository;
+use App\Repository\Repositories\PurchaseRepository;
 use Illuminate\Http\Response;
 
 class AppServices
@@ -21,22 +23,23 @@ class AppServices
 
         $validation = app(DeviceRegisterValidation::class)->makeValidate($request->toArray());
         if (!$validation->isValid) {
-            return new Response($validation->message->toArray(),500);
+            return new Response($validation->message->toArray(), 500);
         }
 
         if ($this->deviceRepository->findByAttributes(["uid" => $request->get('uid')])) {
             return new Response("This uid is already registered !", 400);
         }
+        $client_secret = bin2hex(openssl_random_pseudo_bytes(32));
 
         $insert = $this->deviceRepository->create([
             "uid" => $request->get('uid'),
             "app_id" => $request->get('app_id'),
             "language" => $request->get('language'),
             "device_system" => $request->get('device_system'),
+            "client_token" => $client_secret
         ]);
 
         if ($insert) {
-            $client_secret = bin2hex(openssl_random_pseudo_bytes(32));
             $response = [
                 "client_token" => $client_secret,
                 "register" => 'OK'
@@ -46,4 +49,30 @@ class AppServices
 
         return new Response("Something went wrong !", 404);
     }
+
+    public function purchase($request)
+    {
+        $validation = app(PurchaseValidation::class)->makeValidate($request->toArray());
+        if (!$validation->isValid) {
+            return new Response($validation->message->toArray(), 500);
+        }
+
+        $response = app(VerificationService::class)->isVerifiedToken($request->get('receipt'));
+        if ($response->isSuccessful()) {
+            $insert = app(PurchaseRepository::class)->create([
+                "receipt" => $request->get('receipt'),
+                "client_token" => $request->get('client_token'),
+                "payment_status" => 1,
+            ]);
+
+            if ($insert) {
+                return new Response('Payment Successfully Completed', 200);
+            }
+        }
+
+        return new Response('Payment Failed', 500);
+
+
+    }
 }
+
