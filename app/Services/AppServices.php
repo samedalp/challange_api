@@ -72,6 +72,15 @@ class AppServices
 
         return new Response('Payment Failed', 500);
 
+    }
+
+    public function checkSubscription($request)
+    {
+        if ($this->deviceRepository->findByAttributes(["uid" => $request->get('uid')])) {
+            return new Response('OK', 200);
+        }
+
+        return new Response('Failed', 404);
 
     }
 }

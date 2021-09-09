@@ -11,7 +11,6 @@ class AppController extends Controller
     private AppServices $appServices;
 
     /**
-     * Create a new controller instance.
      *
      * @param AppServices $appServices
      */
@@ -21,19 +20,22 @@ class AppController extends Controller
         $this->appServices = $appServices;
     }
 
-
-    public function registerApp(Request $request)
+    public function registerApp(Request $request): Response
     {
         $response = $this->appServices->registerService($request);
-
-        return new Response($response, 200);
+        return new Response($response, $response->status());
     }
 
-    public function purchase(Request $request)
+    public function purchase(Request $request): Response
     {
         $response = $this->appServices->purchase($request);
+        return new Response($response, $response->status());
+    }
 
-        return new Response($response, 200);
+    public function checkSubscription(Request $request): Response
+    {
+        $response = $this->appServices->checkSubscription($request);
+        return new Response($response, $response->status());
     }
 
 

@@ -15,3 +15,4 @@
 
 $router->post('/register', 'AppController@registerApp');
 $router->post('/purchase', 'AppController@purchase');
+$router->post('/check-subscription', 'AppController@checkSubscription');
