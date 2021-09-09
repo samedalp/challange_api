@@ -9,7 +9,7 @@ use Illuminate\Http\Response;
 
 class VerificationService
 {
-    public function isVerifiedToken($receipt)
+    public function isVerifiedToken($receipt): Response
     {
         if (isset($receipt) && $this->verify($receipt)->isSuccessful()) {
             return new Response(true, 204);
@@ -18,7 +18,7 @@ class VerificationService
 
     }
 
-    private function verify($receipt)
+    private function verify($receipt): Response
     {
         if ((int)substr($receipt, -1) % 2 != 0) {
             $expire_date = Carbon::now('UTC');
