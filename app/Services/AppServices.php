@@ -4,12 +4,16 @@ namespace App\Services;
 
 use App\Http\Validations\Validation\DeviceRegisterValidation;
 use App\Http\Validations\Validation\PurchaseValidation;
+use App\Presenter\ApiCallPresenter;
 use App\Repository\Repositories\DeviceRepository;
 use App\Repository\Repositories\PurchaseRepository;
+use http\Env\Request;
 use Illuminate\Http\Response;
 
 class AppServices
 {
+    use ApiCallPresenter;
+
     private DeviceRepository $deviceRepository;
 
 
@@ -26,7 +30,7 @@ class AppServices
             return new Response($validation->message->toArray(), 500);
         }
 
-        if ($this->deviceRepository->findByAttributes(["uid" => $request->get('uid')])) {
+        if ($this->deviceRepository->findByAttributes(["uid" => $request->get('uid'), "app_id" => $request->get('app_id')])) {
             return new Response("This uid is already registered !", 400);
         }
         $client_secret = bin2hex(openssl_random_pseudo_bytes(32));
@@ -76,7 +80,7 @@ class AppServices
 
     public function checkSubscription($request)
     {
-        if ($this->deviceRepository->findByAttributes(["uid" => $request->get('uid')])) {
+        if (!empty($request->get('client_token')) && $this->deviceRepository->findByAttributes(["client_token" => $request->get('client_token')])) {
             return new Response('OK', 200);
         }
 

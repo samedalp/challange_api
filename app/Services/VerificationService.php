@@ -14,7 +14,7 @@ class VerificationService
         if (isset($receipt) && $this->verify($receipt)->isSuccessful()) {
             return new Response(true, 204);
         }
-        return new Response(false, 405);
+        return new Response(false, 400);
 
     }
 
@@ -25,7 +25,7 @@ class VerificationService
             return new Response(["status" => true, "expire_date" => $expire_date], 200);
         }
 
-        return new Response(["status" => false, "expire_date" => null],405);
+        return new Response(["status" => false, "expire_date" => null],400);
     }
 
 }

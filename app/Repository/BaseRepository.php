@@ -69,7 +69,7 @@ class BaseRepository implements BaseRepositoryInterface
      * @param string $sortOrder
      * @return mixed
      */
-    protected function queryBuilder(array $attributes, $orderBy = null, $sortOrder = 'asc', $with = []): mixed
+    protected function queryBuilder(array $attributes): mixed
     {
 
         $query = $this->model->query();
@@ -89,90 +89,8 @@ class BaseRepository implements BaseRepositoryInterface
                 foreach ($value as $doesntHave) {
                     $query = $query->doesntHave($doesntHave);
                 }
-            } else if ($field == 'whereHas') {
-                foreach ($value as $first => $relations) {
-                    foreach ($relations as $col => $like) {
-                        $query = $query->whereHas($first, function ($q) use ($col, $like) {
-                            $q->where($col, $like);
-                        });
-                    }
-                }
-            } else if ($field == 'whereHasNot') {
-                foreach ($value as $first => $relations) {
-                    foreach ($relations as $col => $not) {
-                        $query = $query->whereHas($first, function ($q) use ($col, $not) {
-                            $q->where($col, "!=", $not);
-                        });
-                    }
-                }
-            } else if ($field == 'whereHasLike') {
-                foreach ($value as $first => $relations) {
-                    foreach ($relations as $col => $like) {
-                        $query = $query->whereHas($first, function ($q) use ($col, $like) {
-                            $q->where($col, 'LIKE', '%' . $like . '%');
-                        });
-                    }
-                }
-            } else if ($field == 'whereHasIn') {
-                foreach ($value as $first => $relations) {
-                    foreach ($relations as $col => $in) {
-                        $query = $query->whereHas($first, function ($q) use ($col, $in) {
-                            $q->whereIn($col, $in);
-                        });
-                    }
-                }
-            } else if ($field == 'whereHasBetween') {
-                foreach ($value as $first => $relations) {
-                    foreach ($relations as $col => $in) {
-                        $query = $query->whereHas($first, function ($q) use ($col, $in) {
-                            $q->whereBetween($col, $in);
-                        });
-                    }
-                }
-            } else if ($field == 'like') {
-                foreach ($value as $col => $like) {
-                    $query = $query->where($col, 'LIKE', $like);
-                }
-            } else if ($field == 'not') {
-                foreach ($value as $col => $not) {
-                    $query = $query->where($col, '!=', $not);
-                }
-            } else if ($field == 'between') {
-                $query = $query->whereBetween(key($value), $value[key($value)]);
-            } else if ($field == 'orWhereHas') {
-                foreach ($value as $first => $relations) {
-                    foreach ($relations as $col => $in) {
-                        $query = $query->orWhereHas($first, function ($q) use ($col, $in) {
-                            $q->where($col, $in);
-                        });
-                    }
-                }
-            } else if ($field == 'orWhereHasIn') {
-                foreach ($value as $first => $relations) {
-                    foreach ($relations as $col => $in) {
-                        $query = $query->orWhereHas($first, function ($q) use ($col, $in) {
-                            $q->whereIn($col, $in);
-                        });
-                    }
-                }
             } else {
                 $query = $query->where($field, $value);
-            }
-        }
-
-        if (null !== $orderBy && !isset($orderBy["has"])) {
-            if (!is_array($orderBy)) {
-                $orderBy = [$orderBy];
-            }
-
-            foreach ($orderBy as $order) {
-                $query->orderBy($order, $sortOrder);
-            }
-        }
-
-        if (!empty($with)) {
-            foreach ($with as $relation) {
-                $query = $query->with($relation);
             }
         }
 

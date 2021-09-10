@@ -14,5 +14,6 @@
 */
 
 $router->post('/register', 'AppController@registerApp');
-$router->post('/purchase', 'AppController@purchase');
 $router->post('/check-subscription', 'AppController@checkSubscription');
+$router->post('/purchase', 'AppController@purchase');
+$router->post('/purchase-api', 'ApiController@purchase');
